@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>മലയാളം ഫൈറ്റർ II — MALLU FIGHTER II: നാടൻ കോംബാറ്റ്</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="arcade-header">
+    <div class="brand">
+      <span class="brand-badge">16-BIT KERALA ARCADE · മലയാളം ആർക്കേഡ്</span>
+      <h1>മലയാളം ഫൈറ്റർ II — MALLU FIGHTER II: നാടൻ കോംബാറ്റ്</h1>
+    </div>
+    <nav class="header-actions" aria-label="Arcade controls">
+      <button type="button" id="moveListBtn" class="btn-secondary">📜 Moves</button>
+      <button type="button" id="settingsBtn" class="btn-secondary" aria-label="Settings">⚙️</button>
+    </nav>
+  </header>
+
+  <main class="cabinet-shell">
+    <!-- Character & Stage Select Dashboard -->
+    <section id="selectScreen" class="select-screen" aria-label="Playing Selection Dashboard">
+      <!-- STEP 1: Game Mode & Rules Dashboard -->
+      <div class="dash-panel dash-mode-panel">
+        <div class="dash-panel-head">
+          <h2><span class="step-pill">STEP 1</span> ഗെയിം മോഡ് — CHOOSE PLAY MODE</h2>
+          <div class="select-options">
+            <div id="cpuDiffGroup" class="diff-group" role="group" aria-label="CPU Difficulty">
+              <span>CPU:</span>
+              <button type="button" class="diff-btn" data-diff="paavam">Paavam</button>
+              <button type="button" class="diff-btn active" data-diff="chettan">Chettan</button>
+              <button type="button" class="diff-btn" data-diff="mass">Mass Boss</button>
+            </div>
+            <label class="toggle-chip">
+              <input type="checkbox" id="powerupsToggle" checked>
+              <span>Snack Power-Ups</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="mode-buttons" role="group" aria-label="Game Mode">
+          <button type="button" class="mode-btn active" data-mode="arcade">
+            <span class="mode-icon">🏆</span>
+            <strong>Arcade Ladder</strong>
+            <small>1P · 4-Round Story</small>
+          </button>
+          <button type="button" class="mode-btn" data-mode="vs-cpu">
+            <span class="mode-icon">🤖</span>
+            <strong>1P vs CPU</strong>
+            <small>Quick Solo Match</small>
+          </button>
+          <button type="button" class="mode-btn" data-mode="vs-p2">
+            <span class="mode-icon">👥</span>
+            <strong>2P Local VS</strong>
+            <small>Same Keyboard</small>
+          </button>
+          <button type="button" class="mode-btn" data-mode="online">
+            <span class="mode-icon">🌐</span>
+            <strong>Online / Wi-Fi</strong>
+            <small>2-Device Room</small>
+          </button>
+          <button type="button" class="mode-btn" data-mode="training">
+            <span class="mode-icon">🥋</span>
+            <strong>Training</strong>
+            <small>Practice + Mass</small>
+          </button>
+        </div>
+
+        <!-- Online / Wi-Fi Multiplayer Room Lobby -->
+        <div id="onlineLobbyPanel" class="online-lobby" hidden>
+          <div class="lobby-col">
+            <strong>Host Room (1P)</strong>
+            <div class="lobby-actions">
+              <button type="button" id="createRoomBtn" class="btn-accent">🎮 Create Match Room</button>
+              <span id="roomCodeBadge" class="room-code-badge" hidden>CODE: ----</span>
+            </div>
+            <div id="roomInviteRow" class="room-invite-row" hidden>
+              <a id="roomInviteLink" href="#" class="lan-url-link" target="_blank" rel="noopener"></a>
+              <button type="button" id="copyInviteBtn" class="btn-secondary">📋 Copy Link</button>
+            </div>
+          </div>
+          <div class="lobby-col">
+            <strong>Join Friend's Room (2P)</strong>
+            <div class="lobby-actions">
+              <input type="text" id="joinCodeInput" class="join-code-input" maxlength="6" inputmode="numeric" placeholder="4-Digit Code" aria-label="Room Code">
+              <button type="button" id="joinRoomBtn" class="btn-secondary">🔗 Join</button>
+              <button type="button" id="leaveRoomBtn" class="btn-secondary" hidden>✕ Leave</button>
+            </div>
+          </div>
+          <div class="lobby-status-strip">
+            <span id="onlineStatusText" class="online-status-text">Create a room or enter a 4-digit Room Code to fight across Mobile &amp; PC!</span>
+            <div class="lobby-badges">
+              <span id="p1LobbyStatus" class="voice-pill">1P: Not in Room</span>
+              <span id="p2LobbyStatus" class="voice-pill">2P: Waiting</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: Fighter Rotation Selection & Matchup Dashboard -->
+      <div class="dash-panel dash-fighter-panel">
+        <div class="dash-panel-head">
+          <h2><span class="step-pill">STEP 2</span> പോരാളി — ROTATE &amp; PICK FIGHTERS</h2>
+          <div class="dash-fighter-actions">
+            <button type="button" id="pickTargetBtn" class="btn-outline">Picking: 1P (Switch to Rival)</button>
+            <span class="select-subhint"><code>A</code>/<code>D</code> 1P · <code>J</code>/<code>L</code> Rival · Swipe / Arrows</span>
+          </div>
+        </div>
+
+        <div id="rosterCarousel" class="roster-carousel" aria-label="Rotating Fighter Selection Wheel">
+          <button type="button" id="rotateLeftBtn" class="wheel-arrow wheel-prev" aria-label="Rotate Left">◀</button>
+          <div class="carousel-stage">
+            <div id="rosterGrid" class="roster-wheel"></div>
+          </div>
+          <button type="button" id="rotateRightBtn" class="wheel-arrow wheel-next" aria-label="Rotate Right">▶</button>
+        </div>
+        <div id="rosterDots" class="roster-dots" role="group" aria-label="Fighter Quick Dial"></div>
+
+        <div class="preview-pair">
+          <article id="p1Preview" class="fighter-preview p1-box"></article>
+          <div class="vs-medallion" aria-hidden="true">VS</div>
+          <article id="p2Preview" class="fighter-preview p2-box"></article>
+        </div>
+      </div>
+
+      <!-- STEP 3: Stage & Launch Dashboard -->
+      <div class="dash-panel dash-stage-panel">
+        <div class="dash-panel-head">
+          <h2><span class="step-pill">STEP 3</span> കേരള വേദി — SELECT ARENA &amp; FIGHT</h2>
+          <span class="select-subhint"><code>W</code>/<code>S</code> Stage · <code>Enter</code> Start</span>
+        </div>
+
+        <div id="stageList" class="stage-list"></div>
+
+        <div class="launch-row launch-summary-bar">
+          <div id="matchSummaryText" class="match-summary-pill"></div>
+          <button type="button" id="startFightBtn" class="btn-primary">അടിച്ചു പൊളിക്കാം! — ADICHU POLIKKAAM (START FIGHT)</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Live Arcade Arena Screen -->
+    <section id="arenaScreen" class="arena-screen" hidden aria-label="Fight Arena">
+      <div class="arena-topbar">
+        <button type="button" id="backToSelectBtn" class="btn-secondary" aria-label="Back to Fighter Select">← <span class="hide-compact">Fighter Select</span></button>
+        <div id="arenaPlaceBar" class="arena-place-bar" role="group" aria-label="Change Kerala Place"></div>
+        <div id="trainingBar" class="training-bar" hidden>
+          <button type="button" id="spawnPowerupBtn" class="btn-accent">Drop Snack Power-Up!</button>
+          <button type="button" id="fillMeterBtn" class="btn-accent">Fill Mass Meter 100%</button>
+        </div>
+        <button type="button" id="fullscreenBtn" class="btn-secondary" title="Toggle Fullscreen" aria-label="Toggle Fullscreen">⛶</button>
+        <span class="intro-hint"><code>1</code>–<code>6</code> Change Place · <code>J</code> Skip Intro · <code>Esc</code> Back</span>
+      </div>
+
+      <div id="cabinetFrame" class="cabinet-frame">
+        <canvas id="gameCanvas" width="640" height="360"></canvas>
+        <div class="crt-overlay" aria-hidden="true"></div>
+
+        <!-- Victory Overlay -->
+        <div id="victoryOverlay" class="victory-overlay" hidden>
+          <div class="victory-card">
+            <img id="winnerPortrait" width="144" height="144" class="winner-portrait" alt="Match winner portrait">
+            <h2 id="victoryTitle">WINNER!</h2>
+            <p id="victoryQuote" class="victory-quote"></p>
+            <p id="victoryScore" class="victory-score"></p>
+            <div class="victory-actions">
+              <button type="button" id="nextStageBtn" class="btn-primary" hidden>NEXT CHALLENGER →</button>
+              <button type="button" id="rematchBtn" class="btn-accent">REMATCH</button>
+              <button type="button" id="victorySelectBtn" class="btn-secondary">CHARACTER SELECT</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- On-Screen Mobile / Touchscreen Arcade Controls -->
+      <div id="touchPad" class="touch-pad" hidden aria-label="Touchscreen Fight Controls">
+        <div id="touchDpad" class="touch-dpad" role="group" aria-label="Movement D-Pad">
+          <span class="dpad-dir dpad-up" data-dir="up">▲</span>
+          <span class="dpad-dir dpad-left" data-dir="left">◀</span>
+          <span class="dpad-center" aria-hidden="true">✚</span>
+          <span class="dpad-dir dpad-right" data-dir="right">▶</span>
+          <span class="dpad-dir dpad-down" data-dir="down">▼</span>
+        </div>
+        <div id="touchActions" class="touch-actions" role="group" aria-label="Fight Action Buttons">
+          <button type="button" class="touch-btn btn-light" data-action="light"><strong>J</strong><span>PUNCH</span></button>
+          <button type="button" class="touch-btn btn-heavy" data-action="heavy"><strong>K</strong><span>KICK</span></button>
+          <button type="button" class="touch-btn btn-spec" data-action="special"><strong>L</strong><span>POWER</span></button>
+          <button type="button" class="touch-btn btn-block" data-action="block"><strong>🛡</strong><span>BLOCK</span></button>
+          <button type="button" class="touch-btn btn-upspec" data-action="upSpecial"><strong>W+L</strong><span>AIR</span></button>
+          <button type="button" id="touchSuperBtn" class="touch-btn btn-super" data-action="super"><strong>I</strong><span>SUPER</span></button>
+        </div>
+      </div>
+
+      <footer class="controls-legend">
+        <div>
+          <strong>1P Controls (MK Keyboard):</strong>
+          <code>W</code><code>A</code><code>S</code><code>D</code> Move/Jump/Crouch ·
+          <code>J</code> Punch · <code>K</code> Kick · <code>L</code> Projectile (<code>W+L</code> / <code>S+L</code> Special) ·
+          <code>I</code> <strong>MASS SUPER</strong> · <code>Space</code>/<code>U</code> or Hold Back = Block
+        </div>
+        <div>
+          <strong>2P Controls:</strong>
+          <code>←</code><code>↑</code><code>↓</code><code>→</code> Move ·
+          <code>Num1</code>/<code>,</code> Punch · <code>Num2</code>/<code>.</code> Kick · <code>Num3</code>/<code>/</code> Special ·
+          <code>Num5</code>/<code>'</code> <strong>MASS SUPER</strong> · <code>Num0</code>/<code>;</code> Block
+        </div>
+        <div>
+          <strong>Menus &amp; Match Shortcuts:</strong>
+          <code>Enter</code>/<code>J</code> Next or Rematch · <code>R</code> Rematch · <code>Tab</code> Move List · <code>M</code> Music · <code>Esc</code> Fighter Select
+        </div>
+      </footer>
+    </section>
+  </main>
+
+  <dialog id="moveListDialog" closedby="any" aria-labelledby="moveListTitle" class="arcade-dialog">
+    <div class="dialog-header">
+      <h2 id="moveListTitle">മല്ലു ഫൈറ്റർ മൂവ് ലിസ്റ്റ് — Move List &amp; Kerala Snacks</h2>
+      <button type="button" id="closeMoveListBtn" class="btn-secondary">Close</button>
+    </div>
+    <div class="dialog-body">
+      <h3>Fighters &amp; Signature Powers</h3>
+      <div id="moveListContent" class="move-list-grid"></div>
+      <h3>Mid-Match Kerala Snack Power-Ups (കേരള സ്നാക്സ്)</h3>
+      <ul class="snack-list">
+        <li><strong>ചൂട് ചായ (Choodu Chaya):</strong> Restores +20 HP &amp; +22% Mass Meter — <em>"ഒരു സ്ട്രോങ്ങ് മീറ്റർ ചായ! എനർജി ഫുൾ ആയി മോനേ!"</em></li>
+        <li><strong>പഴംപൊരി (Pazhampori):</strong> 1.5x Attack Damage for 8s — <em>"പഴംപൊരി പവർ! അടി ഇനി ഡബിൾ ആകും!"</em></li>
+        <li><strong>പാലട പായസം (Palada Payasam):</strong> 1.38x Speed Boost for 8s — <em>"പാലട പായസം അടിച്ചു! റോക്കറ്റ് സ്പീഡ് മോഡ്!"</em></li>
+        <li><strong>കരിക്ക് വെള്ളം (Karikku):</strong> 50% Armor Shield for 8s — <em>"കരിക്ക് വെള്ളം! കൂൾ ആയിട്ട് 50% ആർമർ!"</em></li>
+        <li><strong>കാന്താരി മുളക് (Kanthari Mulaku):</strong> +55% Mass Super Meter — <em>"കാന്താരി മുളക് കടിച്ചു! തീ പാറും!"</em></li>
+      </ul>
+    </div>
+  </dialog>
+
+  <dialog id="dubStudioDialog" closedby="any" aria-labelledby="dubStudioTitle" class="arcade-dialog">
+    <div class="dialog-header">
+      <h2 id="dubStudioTitle">🎙️ Mallu Dub Studio — സ്വന്തം ശബ്ദം (Real Human Voices, Zero AI)</h2>
+      <button type="button" id="closeDubStudioBtn" class="btn-secondary">Close</button>
+    </div>
+    <div class="dialog-body">
+      <p class="dub-note">
+        Instead of robotic AI/TTS voices, record real Malayalam dialogues with your microphone or upload real
+        <code>.mp3</code> / <code>.wav</code> / <code>.ogg</code> voice clips below. Everything saves locally in your browser
+        and plays automatically inside fights! (When hosted via HTTP, files listed in <code>assets/voices/manifest.json</code> also auto-load.)
+      </p>
+      <div id="dubStudioStatus" class="dub-banner" aria-live="polite"></div>
+      <div id="dubStudioRows" class="dub-grid"></div>
+    </div>
+  </dialog>
+
+  <dialog id="settingsDialog" closedby="any" aria-labelledby="settingsTitle" class="arcade-dialog">
+    <div class="dialog-header">
+      <h2 id="settingsTitle">⚙️ Settings — സെറ്റിംഗ്‌സ്</h2>
+      <button type="button" id="closeSettingsBtn" class="btn-secondary">Close</button>
+    </div>
+    <div class="dialog-body settings-grid">
+      <fieldset class="settings-section">
+        <legend>🔊 Game Audio</legend>
+        <div class="settings-row">
+          <button type="button" id="musicBtn" class="btn-secondary">Chenda BGM: ON</button>
+          <button type="button" id="sfxBtn" class="btn-secondary">SFX: ON</button>
+          <button type="button" id="voiceBtn" class="btn-secondary">Voices: ON</button>
+        </div>
+      </fieldset>
+      <fieldset class="settings-section">
+        <legend>📺 Display &amp; Controls</legend>
+        <div class="settings-row">
+          <label class="toggle-chip">
+            <input type="checkbox" id="crtToggle">
+            <span>CRT Scanlines</span>
+          </label>
+          <button type="button" id="touchToggleBtn" class="btn-secondary">🎮 Touch Pad</button>
+        </div>
+      </fieldset>
+      <fieldset class="settings-section">
+        <legend>📱 Multi-Device</legend>
+        <button type="button" id="multiDeviceBtn" class="btn-secondary">📱 Mobile / Other PC (LAN Play)</button>
+      </fieldset>
+      <details class="admin-settings">
+        <summary>🔧 Admin: Malayalam Voice &amp; Dub Studio</summary>
+        <div class="admin-settings-body">
+          <div class="settings-row">
+            <label class="settings-label" for="voiceModeSelect">Voice Engine</label>
+            <select id="voiceModeSelect" class="voice-select" aria-label="Voice Engine">
+              <option value="humanFirst">Cloud Malayalam TTS / Human Dubs</option>
+              <option value="humanOnly">Human Dubs Only (Zero AI)</option>
+              <option value="allowFallback">Allow English TTS Fallback</option>
+            </select>
+          </div>
+          <div class="settings-row">
+            <label class="settings-label" for="cloudProviderSelect">TTS Provider</label>
+            <select id="cloudProviderSelect" class="voice-select" aria-label="Malayalam TTS Provider">
+              <option value="azure">Azure Neural (ml-IN)</option>
+              <option value="google">Google Cloud TTS (ml-IN)</option>
+              <option value="gnani">Gnani Vachana (ml-IN)</option>
+            </select>
+          </div>
+          <div class="settings-row">
+            <label class="settings-label" for="cloudVoiceSelect">Voice Type</label>
+            <select id="cloudVoiceSelect" class="voice-select" aria-label="Malayalam Voice Type">
+              <option value="auto">Voice: Auto (Male/Female)</option>
+            </select>
+          </div>
+          <div class="settings-row">
+            <span id="voiceStatusBadge" class="voice-pill" aria-live="polite"></span>
+          </div>
+          <button type="button" id="dubStudioBtn" class="btn-accent">🎙️ Dub Studio (Human Voice)</button>
+        </div>
+      </details>
+    </div>
+  </dialog>
+
+  <dialog id="multiDeviceDialog" closedby="any" aria-labelledby="multiDeviceTitle" class="arcade-dialog">
+    <div class="dialog-header">
+      <h2 id="multiDeviceTitle">📱 Play on Mobile &amp; Another PC</h2>
+      <button type="button" id="closeMultiDeviceBtn" class="btn-secondary">Close</button>
+    </div>
+    <div class="dialog-body">
+      <p class="dub-note">
+        <strong>Option 1 — Play on Phone / Tablet / Another PC over Same Wi-Fi:</strong><br>
+        Run <code>play.bat</code> (or <code>npm start</code>) on this PC, make sure your phone or second PC is on the
+        <strong>same Wi-Fi network</strong>, and open one of the links below on that device:
+      </p>
+      <div id="lanLinksList" class="lan-links-list"></div>
+      <div class="dub-note" style="margin-top: 0.9rem;">
+        <strong>Quick Tips:</strong>
+        <ul>
+          <li>If Windows Firewall pops up when starting <code>play.bat</code>, tick <strong>Private networks</strong> and click <strong>Allow</strong>.</li>
+          <li>On Mobile/Touchscreens, play in <strong>Landscape mode</strong> — the <strong>On-Screen D-Pad &amp; Fight Buttons</strong> activate automatically (or toggle <code>🎮 Touch Pad</code> inside <code>⚙️ Settings</code>).</li>
+          <li><strong>Option 2 — Share Anywhere / Other PC Offline:</strong> Copy the entire <code>kerala_fighter</code> folder to another PC (double-click <code>index.html</code>) or deploy the folder to any static HTTPS host (GitHub Pages / Netlify Drop).</li>
+        </ul>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Landscape-only overlay for mobile -->
+  <div id="rotateOverlay" class="rotate-overlay" role="alertdialog" aria-modal="true" aria-label="Rotate your device to landscape">
+    <div class="rotate-content">
+      <div class="rotate-icon" aria-hidden="true">📱🔄</div>
+      <h2>phone thirich pidi mone dineshaaa</h2>
+      <p>ഫോൺ തിരിച്ച് പിടിക്ക് — Playable in <strong>Landscape Mode</strong> only</p>
+    </div>
+  </div>
+
+  <script>
+    (function loadApp() {
+      var s = document.createElement('script');
+      if (window.location.protocol === 'file:') {
+        s.src = 'dist/bundle.js';
+        s.defer = true;
+      } else {
+        s.type = 'module';
+        s.src = 'src/main.js';
+      }
+      document.body.appendChild(s);
+    })();
+  </script>
+</body>
+</html>

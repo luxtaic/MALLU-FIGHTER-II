@@ -1,0 +1,16 @@
+{
+  "name": "mallu-fighter-ii",
+  "version": "1.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "description": "16-bit Pixel Kerala Arcade Fighting Game with Dedicated Malayalam (ml-IN) Cloud TTS",
+  "scripts": {
+    "start": "node server.mjs",
+    "build": "node build.mjs",
+    "tts:generate": "node scripts/generate_malayalam_voices.mjs",
+    "tts:dry-run": "node scripts/generate_malayalam_voices.mjs --dry-run",
+    "test": "node --test tests/engine.test.js tests/render.test.js tests/tts.test.js tests/multiplayer.test.js"
+  }
+}
